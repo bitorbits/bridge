@@ -12,7 +12,7 @@ class h {
     this.name = e;
   }
 }
-class o extends h {
+class c extends h {
   constructor(r, s, i) {
     super(r);
     n(this, "type", "ASYNC");
@@ -39,7 +39,7 @@ class w extends Error {
     super("BridgeUnavailableError");
   }
 }
-class c extends Error {
+class o extends Error {
   constructor() {
     super("BridgeCallRemovedError");
   }
@@ -63,13 +63,13 @@ class E {
   remove(e, r = !0) {
     if (!r) {
       const s = this.bridgeCallMap.get(e);
-      s !== void 0 && (s instanceof o ? s.reject(new c()) : s instanceof d && s.listener(null, !1, new c()));
+      s !== void 0 && (s instanceof c ? s.reject(new o()) : s instanceof d && s.listener(null, !1, new o()));
     }
     return this.bridgeCallMap.delete(e);
   }
   clear() {
     this.bridgeCallMap.forEach((e) => {
-      e instanceof o ? e.reject(new c()) : e instanceof d && e.listener(null, !1, new c());
+      e instanceof c ? e.reject(new o()) : e instanceof d && e.listener(null, !1, new o());
     }), this.bridgeCallMap.clear();
   }
   canReceive(e) {
@@ -77,10 +77,10 @@ class E {
   }
   receive(e) {
     try {
-      const r = JSON.parse(e), s = this.bridgeCallMap.get(r.id);
-      return s === void 0 ? !1 : (s instanceof o ? (r.successful ? s.resolve(r.data) : s.reject(r.data), this.remove(s.id)) : s instanceof d && s.listener(r.data, r.successful, null), !0);
-    } catch {
-      return !1;
+      const r = JSON.parse(atob(e)), s = this.bridgeCallMap.get(r.id);
+      return s === void 0 ? !1 : (s instanceof c ? (r.successful ? s.resolve(r.data) : s.reject(r.data), this.remove(s.id)) : s instanceof d && s.listener(r.data, r.successful, null), !0);
+    } catch (r) {
+      return console.error(r), !1;
     }
   }
 }
@@ -100,7 +100,7 @@ class y {
   }
   asyncCall(e, r = null) {
     return new Promise((s, i) => {
-      const a = new o(e, s, i);
+      const a = new c(e, s, i);
       a.data = r;
       try {
         this.bridge.send(a);
@@ -126,7 +126,7 @@ class y {
 }
 export {
   E as Bridge,
-  c as BridgeCallRemovedError,
+  o as BridgeCallRemovedError,
   p as BridgeInactiveError,
   y as BridgePlugin,
   w as BridgeUnavailableError

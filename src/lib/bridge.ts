@@ -111,7 +111,7 @@ export class Bridge {
 
   receive(bridgeCallJson: string): boolean {
     try {
-      const bridgeCall = JSON.parse(bridgeCallJson) as BridgeCall;
+      const bridgeCall = JSON.parse(atob(bridgeCallJson)) as BridgeCall;
       const call = this.bridgeCallMap.get(bridgeCall.id);
       if (call === undefined) return false;
       if (call instanceof AsyncBridgeCall) {
@@ -126,6 +126,7 @@ export class Bridge {
       }
       return true;
     } catch (error) {
+      console.error(error);
       return false;
     }
   }
