@@ -11,31 +11,45 @@ import { BridgeCallData } from "./lib/types";
 
 const data = ref("loading");
 
-window.bridge = new Bridge();
+window.addEventListener("BridgeReady", (event: any) => {
+  console.log(event.detail);
+});
 
 class App extends BridgePlugin {
-  constructor(bridge: Bridge) {
-    super(bridge);
-    this.addMethod("app.invoke_from_android", this.invokeFromAndroid);
+  constructor() {
+    super();
+    this.method("App.invoke", this.invoke);
   }
 
-  private async invokeFromAndroid(_data: BridgeCallData) {
-    data.value = "invokeFromAndroid = " + _data;
-    return "data from webview";
+  private async invoke(_data: BridgeCallData) {
+    data.value = `${_data}`;
+    return "Hello from WebView";
   }
 
   async toast(message: string) {
-    this.asyncCall("app.toast", message);
+    await this.async("App.toast", message);
   }
 }
 
-const app = new App(window.bridge);
+const app = new App();
 
 onMounted(async () => {
-  app.toast("onMounted");
+  try {
+    console.log("readying");
+    await Bridge.ready({
+      data: "BridgeData",
+      plugins: [app],
+    });
 
-  setInterval(() => {
-    app.toast("Random " + Math.random());
-  }, 2000);
+    console.log("ready");
+
+    await app.toast("onMounted");
+
+    setInterval(() => {
+      app.toast("Random " + Math.random());
+    }, 2000);
+  } catch (error) {
+    console.log("error" + error);
+  }
 });
 </script>
