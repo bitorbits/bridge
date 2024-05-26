@@ -35,13 +35,10 @@ const app = new App();
 
 onMounted(async () => {
   try {
-    console.log("readying");
     await Bridge.ready({
       data: "BridgeData",
       plugins: [app],
     });
-
-    console.log("ready");
 
     await app.toast("onMounted");
 
@@ -49,7 +46,7 @@ onMounted(async () => {
       app.toast("Random " + Math.random());
     }, 2000);
   } catch (error) {
-    console.log("error" + error);
+    console.log(error);
   }
 });
 </script>

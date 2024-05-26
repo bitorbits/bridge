@@ -18,9 +18,9 @@ declare class BridgeCall {
     constructor(name: string);
 }
 export declare class Bridge {
-    static ready(bridgeConfig?: IBridgeConfig): Promise<void>;
+    static ready(bridgeConfig?: IBridgeConfig): Promise<BridgeCallData>;
     private bridgeCallMap;
-    constructor();
+    private constructor();
     ready(bridgeConfig?: IBridgeConfig): Promise<BridgeCallData>;
     send(bridgeCall: BridgeCall): void;
     remove(id: BridgeCallId, silent?: boolean): boolean;
@@ -32,7 +32,7 @@ export declare class Bridge {
     listen(name: string, listen: Listen<BridgeCallData>, data?: BridgeCallData): Promise<BridgeCallId>;
     unlisten(id: BridgeCallId): boolean;
 }
-export declare class BridgePlugin {
+export declare abstract class BridgePlugin {
     private bridge;
     private methodMap;
     ready(bridge: Bridge): Promise<void>;

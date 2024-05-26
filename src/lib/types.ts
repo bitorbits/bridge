@@ -9,8 +9,8 @@ export type BridgeMethod = (data: BridgeCallData) => Promise<BridgeCallData>;
 
 declare global {
   interface Window {
-    bridge: Bridge;
-    native: {
+    bridge?: Bridge;
+    native?: {
       process(bridgeCallJson: string): boolean;
     };
   }

@@ -69,7 +69,7 @@ class BridgeCallRemovedError extends BridgeError {
 
 class BridgePlugInNotReadyError extends BridgeError {
   constructor(message: string = "") {
-    super("BridgePlugInNotRegisteredError", message);
+    super("BridgePlugInNotReadyError", message);
   }
 }
 
@@ -80,14 +80,13 @@ const defaultBridgeConfig: IBridgeConfig = {
 
 export class Bridge {
   static async ready(bridgeConfig: IBridgeConfig = defaultBridgeConfig) {
-    const bridge = new Bridge();
-    window["bridge"] = bridge;
-    await bridge.ready(bridgeConfig);
+    window.bridge = new Bridge();
+    return await window.bridge.ready(bridgeConfig);
   }
 
   private bridgeCallMap = new Map<BridgeCallId, BridgeCall>();
 
-  constructor() {}
+  private constructor() {}
 
   async ready(bridgeConfig: IBridgeConfig = defaultBridgeConfig) {
     const data = bridgeConfig.data ?? defaultBridgeConfig.data!;
@@ -221,7 +220,7 @@ export class Bridge {
   }
 }
 
-export class BridgePlugin {
+export abstract class BridgePlugin {
   private bridge: Bridge | null = null;
   private methodMap = new Map<string, BridgeMethod>();
 

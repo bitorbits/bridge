@@ -8,8 +8,8 @@ export type Listen<T> = (data: T, successful: boolean, error: Error | null) => v
 export type BridgeMethod = (data: BridgeCallData) => Promise<BridgeCallData>;
 declare global {
     interface Window {
-        bridge: Bridge;
-        native: {
+        bridge?: Bridge;
+        native?: {
             process(bridgeCallJson: string): boolean;
         };
     }

@@ -1,6 +1,6 @@
-var m = Object.defineProperty;
-var y = (n, e, r) => e in n ? m(n, e, { enumerable: !0, configurable: !0, writable: !0, value: r }) : n[e] = r;
-var i = (n, e, r) => (y(n, typeof e != "symbol" ? e + "" : e, r), r);
+var y = Object.defineProperty;
+var m = (n, e, r) => e in n ? y(n, e, { enumerable: !0, configurable: !0, writable: !0, value: r }) : n[e] = r;
+var i = (n, e, r) => (m(n, typeof e != "symbol" ? e + "" : e, r), r);
 import { v4 as v } from "uuid";
 class f {
   constructor(e) {
@@ -51,20 +51,19 @@ class d extends h {
 }
 class g extends h {
   constructor(e = "") {
-    super("BridgePlugInNotRegisteredError", e);
+    super("BridgePlugInNotReadyError", e);
   }
 }
 const u = {
   data: "",
   plugins: []
 };
-class p {
+class w {
   constructor() {
     i(this, "bridgeCallMap", /* @__PURE__ */ new Map());
   }
   static async ready(e = u) {
-    const r = new p();
-    window.bridge = r, await r.ready(e);
+    return window.bridge = new w(), await window.bridge.ready(e);
   }
   async ready(e = u) {
     const r = e.data ?? u.data, t = e.plugins ?? u.plugins;
@@ -136,8 +135,8 @@ class p {
       o.data = t;
       try {
         this.send(o), s(o.id);
-      } catch (w) {
-        a(w);
+      } catch (p) {
+        a(p);
       }
     });
   }
@@ -173,6 +172,6 @@ class C {
   }
 }
 export {
-  p as Bridge,
+  w as Bridge,
   C as BridgePlugin
 };
