@@ -1,10 +1,11 @@
-var y = Object.defineProperty;
-var m = (n, e, r) => e in n ? y(n, e, { enumerable: !0, configurable: !0, writable: !0, value: r }) : n[e] = r;
-var i = (n, e, r) => (m(n, typeof e != "symbol" ? e + "" : e, r), r);
-import { v4 as v } from "uuid";
-class f {
+var m = Object.defineProperty;
+var y = (n, e, r) => e in n ? m(n, e, { enumerable: !0, configurable: !0, writable: !0, value: r }) : n[e] = r;
+var i = (n, e, r) => (y(n, typeof e != "symbol" ? e + "" : e, r), r);
+import { v4 as B } from "uuid";
+const E = "2.0.3";
+class g {
   constructor(e) {
-    i(this, "id", v());
+    i(this, "id", B());
     i(this, "name");
     i(this, "data", null);
     i(this, "type", "NONE");
@@ -12,7 +13,7 @@ class f {
     this.name = e;
   }
 }
-class l extends f {
+class l extends g {
   constructor(r, t, s) {
     super(r);
     i(this, "type", "ASYNC");
@@ -21,7 +22,7 @@ class l extends f {
     this.resolve = t, this.reject = s;
   }
 }
-class c extends f {
+class d extends g {
   constructor(r, t) {
     super(r);
     i(this, "type", "LISTEN");
@@ -29,44 +30,58 @@ class c extends f {
     this.listen = t;
   }
 }
-class h extends Error {
+class c extends Error {
   constructor(e = "BridgeError", r = "") {
     super((e + " " + r).trim());
   }
 }
-class B extends h {
+class M extends c {
+  constructor(e = "") {
+    super("BridgeVersionError", e);
+  }
+}
+class w extends c {
   constructor(e = "") {
     super("BridgeInactiveError", e);
   }
 }
-class E extends h {
+class b extends c {
   constructor(e = "") {
     super("BridgeUnavailableError", e);
   }
 }
-class d extends h {
+class u extends c {
   constructor(e = "") {
     super("BridgeCallRemovedError", e);
   }
 }
-class g extends h {
+class f extends c {
   constructor(e = "") {
     super("BridgePlugInNotReadyError", e);
   }
 }
-const u = {
+const h = {
   data: "",
   plugins: []
 };
-class w {
+class v {
   constructor() {
     i(this, "bridgeCallMap", /* @__PURE__ */ new Map());
+    i(this, "nativeVersion", null);
   }
-  static async ready(e = u) {
-    return window.bridge = new w(), await window.bridge.ready(e);
+  static async ready(e = h) {
+    return window.bridge = new v(), await window.bridge.ready(e);
   }
-  async ready(e = u) {
-    const r = e.data ?? u.data, t = e.plugins ?? u.plugins;
+  static version() {
+    var e;
+    return (e = window.bridge) == null ? void 0 : e.version();
+  }
+  version() {
+    return E;
+  }
+  async ready(e = h) {
+    const r = e.data ?? h.data, t = e.plugins ?? h.plugins;
+    window.dispatchEvent(new CustomEvent("BridgeInit")), await this.async("Bridge.init", r);
     for (let a of t)
       await a.ready(this);
     const s = await this.async("Bridge.ready", r);
@@ -75,26 +90,34 @@ class w {
   send(e) {
     this.bridgeCallMap.set(e.id, e);
     const r = "native";
-    if (window.hasOwnProperty(r))
+    if (window.hasOwnProperty(r)) {
+      const t = window[r];
       try {
-        if (!window[r].process(JSON.stringify(e)))
-          throw this.remove(e.id), new B(e.name);
-      } catch (t) {
-        throw this.remove(e.id), t;
+        try {
+          this.nativeVersion === null && (this.nativeVersion = t.version());
+        } catch {
+          throw this.remove(e.id), new w(e.name);
+        }
+        if (this.version() !== this.nativeVersion)
+          throw this.remove(e.id), new M(`${e.name} js(${this.version()}) native(${this.nativeVersion})`);
+        if (!t.process(JSON.stringify(e)))
+          throw this.remove(e.id), new w(e.name);
+      } catch (s) {
+        throw this.remove(e.id), s;
       }
-    else
-      throw this.remove(e.id), new E(e.name);
+    } else
+      throw this.remove(e.id), new b(e.name);
   }
   remove(e, r = !0) {
     if (!r) {
       const t = this.bridgeCallMap.get(e);
-      t !== void 0 && (t instanceof l ? t.reject(new d(t.name)) : t instanceof c && t.listen(null, !1, new d(t.name)));
+      t !== void 0 && (t instanceof l ? t.reject(new u(t.name)) : t instanceof d && t.listen(null, !1, new u(t.name)));
     }
     return this.bridgeCallMap.delete(e);
   }
   clear() {
     this.bridgeCallMap.forEach((e) => {
-      e instanceof l ? e.reject(new d(e.name)) : e instanceof c && e.listen(null, !1, new d(e.name));
+      e instanceof l ? e.reject(new u(e.name)) : e instanceof d && e.listen(null, !1, new u(e.name));
     }), this.bridgeCallMap.clear();
   }
   canReceive(e) {
@@ -103,7 +126,7 @@ class w {
   receive(e) {
     try {
       const r = JSON.parse(atob(e)), t = this.bridgeCallMap.get(r.id);
-      return t === void 0 ? !1 : (t instanceof l ? (r.successful ? t.resolve(r.data) : t.reject(r.data), this.remove(t.id)) : t instanceof c && t.listen(r.data, r.successful, null), !0);
+      return t === void 0 ? !1 : (t instanceof l ? (r.successful ? t.resolve(r.data) : t.reject(r.data), this.remove(t.id)) : t instanceof d && t.listen(r.data, r.successful, null), !0);
     } catch (r) {
       return console.error(r), !1;
     }
@@ -131,7 +154,7 @@ class w {
   }
   listen(e, r, t = null) {
     return new Promise((s, a) => {
-      const o = new c(e, r);
+      const o = new d(e, r);
       o.data = t;
       try {
         this.send(o), s(o.id);
@@ -144,7 +167,7 @@ class w {
     return this.remove(e, !1);
   }
 }
-class C {
+class I {
   constructor() {
     i(this, "bridge", null);
     i(this, "methodMap", /* @__PURE__ */ new Map());
@@ -159,12 +182,12 @@ class C {
   }
   async async(e, r = null) {
     if (this.bridge === null)
-      throw new g(e);
+      throw new f(e);
     return this.bridge.async(e, r);
   }
   listen(e, r, t = null) {
     if (this.bridge === null)
-      throw new g(e);
+      throw new f(e);
     return this.bridge.listen(e, r, t);
   }
   unlisten(e) {
@@ -172,6 +195,6 @@ class C {
   }
 }
 export {
-  w as Bridge,
-  C as BridgePlugin
+  v as Bridge,
+  I as BridgePlugin
 };

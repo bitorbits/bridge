@@ -1,5 +1,6 @@
 import { BridgeCallId, BridgeCallData, Resolve, Reject, Listen, BridgeMethod } from "./types";
 import { v4 as uuidv4 } from "uuid";
+import * as packageJson from "../../package.json";
 
 interface IBridgeConfig {
   data?: string;
@@ -49,6 +50,12 @@ class BridgeError extends Error {
   }
 }
 
+class BridgeVersionError extends BridgeError {
+  constructor(message: string = "") {
+    super("BridgeVersionError", message);
+  }
+}
+
 class BridgeInactiveError extends BridgeError {
   constructor(message: string = "") {
     super("BridgeInactiveError", message);
@@ -84,13 +91,26 @@ export class Bridge {
     return await window.bridge.ready(bridgeConfig);
   }
 
+  static version() {
+    return window.bridge?.version();
+  }
+
   private bridgeCallMap = new Map<BridgeCallId, BridgeCall>();
+  private nativeVersion: string | null = null;
 
   private constructor() {}
+
+  version() {
+    return packageJson.version;
+  }
 
   async ready(bridgeConfig: IBridgeConfig = defaultBridgeConfig) {
     const data = bridgeConfig.data ?? defaultBridgeConfig.data!;
     const plugins = bridgeConfig.plugins ?? defaultBridgeConfig.plugins!;
+
+    window.dispatchEvent(new CustomEvent("BridgeInit"));
+
+    await this.async("Bridge.init", data);
 
     for (let plugin of plugins) {
       await plugin.ready(this);
@@ -108,8 +128,23 @@ export class Bridge {
     const connector = "native";
     // eslint-disable-next-line no-prototype-builtins
     if (window.hasOwnProperty(connector)) {
+      const connectorInstance = window[connector as keyof Window];
       try {
-        if (!window[connector as keyof Window].process(JSON.stringify(bridgeCall))) {
+        try {
+          if (this.nativeVersion === null) {
+            this.nativeVersion = connectorInstance.version();
+          }
+        } catch (error) {
+          this.remove(bridgeCall.id);
+          throw new BridgeInactiveError(bridgeCall.name);
+        }
+
+        if (this.version() !== this.nativeVersion) {
+          this.remove(bridgeCall.id);
+          throw new BridgeVersionError(`${bridgeCall.name} js(${this.version()}) native(${this.nativeVersion})`);
+        }
+
+        if (!connectorInstance!.process(JSON.stringify(bridgeCall))) {
           this.remove(bridgeCall.id);
           throw new BridgeInactiveError(bridgeCall.name);
         }

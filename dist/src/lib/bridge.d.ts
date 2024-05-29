@@ -19,8 +19,11 @@ declare class BridgeCall {
 }
 export declare class Bridge {
     static ready(bridgeConfig?: IBridgeConfig): Promise<BridgeCallData>;
+    static version(): string | undefined;
     private bridgeCallMap;
+    private nativeVersion;
     private constructor();
+    version(): string;
     ready(bridgeConfig?: IBridgeConfig): Promise<BridgeCallData>;
     send(bridgeCall: BridgeCall): void;
     remove(id: BridgeCallId, silent?: boolean): boolean;

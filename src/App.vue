@@ -11,10 +11,6 @@ import { BridgeCallData } from "./lib/types";
 
 const data = ref("loading");
 
-window.addEventListener("BridgeReady", (event: any) => {
-  console.log(event.detail);
-});
-
 class App extends BridgePlugin {
   constructor() {
     super();
@@ -41,10 +37,6 @@ onMounted(async () => {
     });
 
     await app.toast("onMounted");
-
-    setInterval(() => {
-      app.toast("Random " + Math.random());
-    }, 2000);
   } catch (error) {
     console.log(error);
   }
