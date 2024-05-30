@@ -111,6 +111,7 @@ export class Bridge {
 
   private bridgeCallMap = new Map<BridgeCallId, BridgeCall>();
   private nativeVersion: string | null = null;
+  private bridgeIsReady = false;
 
   private constructor() {}
 
@@ -119,6 +120,8 @@ export class Bridge {
   }
 
   async ready(bridgeConfig: IBridgeConfig = defaultBridgeConfig) {
+    if (this.bridgeIsReady) return null;
+
     const data = bridgeConfig.data ?? defaultBridgeConfig.data!;
     const plugins = bridgeConfig.plugins ?? defaultBridgeConfig.plugins!;
 
@@ -134,7 +137,13 @@ export class Bridge {
 
     window.dispatchEvent(new CustomEvent("BridgeReady", { detail: result }));
 
+    this.bridgeIsReady = true;
+
     return result;
+  }
+
+  isReady() {
+    return this.bridgeIsReady;
   }
 
   send(bridgeCall: BridgeCall): void {
@@ -282,7 +291,11 @@ export abstract class BridgePlugin {
   }
 
   private getName(name: string) {
-    return `${this.constructor.name}.${name}`;
+    return `${this.constructor.name}.${name}`.trim();
+  }
+
+  isReady() {
+    return this.bridge !== null && this.bridge.isReady();
   }
 
   protected method(name: string, method: BridgeMethod): void {
@@ -291,25 +304,25 @@ export abstract class BridgePlugin {
 
   protected async async(name: string, data: BridgeCallData = null): Promise<BridgeCallData> {
     const _name = this.getName(name);
-    if (this.bridge === null) {
+    if (!this.isReady()) {
       throw new BridgePlugInNotReadyError(_name);
     }
-    return this.bridge.async(_name, data);
+    return this.bridge!.async(_name, data);
   }
 
   protected listen(name: string, listen: Listen<BridgeCallData>, data: BridgeCallData = null): Promise<string> {
     const _name = this.getName(name);
-    if (this.bridge === null) {
+    if (!this.isReady()) {
       throw new BridgePlugInNotReadyError(_name);
     }
-    return this.bridge.listen(_name, listen, data);
+    return this.bridge!.listen(_name, listen, data);
   }
 
-  protected unlisten(id: string): boolean {
-    if (this.bridge === null) {
+  unlisten(id: string): boolean {
+    if (!this.isReady()) {
       return false;
     } else {
-      return this.bridge.unlisten(id);
+      return this.bridge!.unlisten(id);
     }
   }
 }

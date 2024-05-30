@@ -3,9 +3,11 @@ export declare class Bridge {
   static version(): string | undefined;
   private bridgeCallMap;
   private nativeVersion;
+  private bridgeIsReady;
   private constructor();
   version(): string;
   ready(bridgeConfig?: IBridgeConfig): Promise<BridgeCallData>;
+  isReady(): boolean;
   send(bridgeCall: BridgeCall): void;
   remove(id: BridgeCallId, silent?: boolean): boolean;
   clear(): void;
@@ -43,10 +45,11 @@ export declare abstract class BridgePlugin {
   private methodMap;
   ready(bridge: Bridge): Promise<void>;
   private getName;
+  isReady(): boolean;
   protected method(name: string, method: BridgeMethod): void;
   protected async(name: string, data?: BridgeCallData): Promise<BridgeCallData>;
   protected listen(name: string, listen: Listen<BridgeCallData>, data?: BridgeCallData): Promise<string>;
-  protected unlisten(id: string): boolean;
+  unlisten(id: string): boolean;
 }
 
 declare interface IBridgeConfig {
