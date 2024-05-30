@@ -293,7 +293,9 @@ export abstract class BridgePlugin {
   abstract name(): string;
 
   private getName(name: string) {
-    return `${this.constructor.name}.${name}`.trim();
+    const trimmedName = this.name().trim();
+    const list = [trimmedName === "" ? null : trimmedName, name.trim()].filter((value) => value !== null);
+    return list.join(".");
   }
 
   isReady() {
