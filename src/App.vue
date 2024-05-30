@@ -13,7 +13,7 @@ const data = ref("loading");
 class App extends BridgePlugin {
   constructor() {
     super();
-    this.method("App.invoke", this.invoke);
+    this.method(this.invoke.name, this.invoke);
   }
 
   private async invoke(_data: BridgeCallData) {
@@ -22,7 +22,7 @@ class App extends BridgePlugin {
   }
 
   async toast(message: string) {
-    await this.async("App.toast", message);
+    await this.async(this.toast.name, message);
   }
 }
 

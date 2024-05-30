@@ -42,6 +42,7 @@ export declare abstract class BridgePlugin {
   private bridge;
   private methodMap;
   ready(bridge: Bridge): Promise<void>;
+  private getName;
   protected method(name: string, method: BridgeMethod): void;
   protected async(name: string, data?: BridgeCallData): Promise<BridgeCallData>;
   protected listen(name: string, listen: Listen<BridgeCallData>, data?: BridgeCallData): Promise<string>;

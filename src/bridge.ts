@@ -281,22 +281,28 @@ export abstract class BridgePlugin {
     }
   }
 
+  private getName(name: string) {
+    return `${this.constructor.name}.${name}`;
+  }
+
   protected method(name: string, method: BridgeMethod): void {
-    this.methodMap.set(name, method);
+    this.methodMap.set(this.getName(name), method);
   }
 
   protected async async(name: string, data: BridgeCallData = null): Promise<BridgeCallData> {
+    const _name = this.getName(name);
     if (this.bridge === null) {
-      throw new BridgePlugInNotReadyError(name);
+      throw new BridgePlugInNotReadyError(_name);
     }
-    return this.bridge.async(name, data);
+    return this.bridge.async(_name, data);
   }
 
   protected listen(name: string, listen: Listen<BridgeCallData>, data: BridgeCallData = null): Promise<string> {
+    const _name = this.getName(name);
     if (this.bridge === null) {
-      throw new BridgePlugInNotReadyError(name);
+      throw new BridgePlugInNotReadyError(_name);
     }
-    return this.bridge.listen(name, listen, data);
+    return this.bridge.listen(_name, listen, data);
   }
 
   protected unlisten(id: string): boolean {
