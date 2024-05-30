@@ -2,7 +2,6 @@ var m = Object.defineProperty;
 var y = (n, e, r) => e in n ? m(n, e, { enumerable: !0, configurable: !0, writable: !0, value: r }) : n[e] = r;
 var i = (n, e, r) => (y(n, typeof e != "symbol" ? e + "" : e, r), r);
 import { v4 as B } from "uuid";
-const E = "2.0.3";
 class g {
   constructor(e) {
     i(this, "id", B());
@@ -35,7 +34,7 @@ class c extends Error {
     super((e + " " + r).trim());
   }
 }
-class M extends c {
+class E extends c {
   constructor(e = "") {
     super("BridgeVersionError", e);
   }
@@ -45,7 +44,7 @@ class w extends c {
     super("BridgeInactiveError", e);
   }
 }
-class b extends c {
+class M extends c {
   constructor(e = "") {
     super("BridgeUnavailableError", e);
   }
@@ -77,7 +76,7 @@ class v {
     return (e = window.bridge) == null ? void 0 : e.version();
   }
   version() {
-    return E;
+    return "2.0.4";
   }
   async ready(e = h) {
     const r = e.data ?? h.data, t = e.plugins ?? h.plugins;
@@ -99,14 +98,14 @@ class v {
           throw this.remove(e.id), new w(e.name);
         }
         if (this.version() !== this.nativeVersion)
-          throw this.remove(e.id), new M(`${e.name} js(${this.version()}) native(${this.nativeVersion})`);
+          throw this.remove(e.id), new E(`${e.name} js(${this.version()}) native(${this.nativeVersion})`);
         if (!t.process(JSON.stringify(e)))
           throw this.remove(e.id), new w(e.name);
       } catch (s) {
         throw this.remove(e.id), s;
       }
     } else
-      throw this.remove(e.id), new b(e.name);
+      throw this.remove(e.id), new M(e.name);
   }
   remove(e, r = !0) {
     if (!r) {
@@ -167,7 +166,7 @@ class v {
     return this.remove(e, !1);
   }
 }
-class I {
+class N {
   constructor() {
     i(this, "bridge", null);
     i(this, "methodMap", /* @__PURE__ */ new Map());
@@ -196,5 +195,5 @@ class I {
 }
 export {
   v as Bridge,
-  I as BridgePlugin
+  N as BridgePlugin
 };

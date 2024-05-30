@@ -1,6 +1,20 @@
-import { BridgeCallId, BridgeCallData, Resolve, Reject, Listen, BridgeMethod } from "./types";
 import { v4 as uuidv4 } from "uuid";
-import * as packageJson from "../../package.json";
+
+declare global {
+  interface Window {
+    bridge?: Bridge;
+    native?: {
+      process(bridgeCallJson: string): boolean;
+    };
+  }
+}
+
+export type Resolve<T> = (data: T | PromiseLike<T>) => void;
+export type Reject<T> = (data: T) => void;
+export type BridgeCallId = string;
+export type BridgeCallData = string | null;
+export type Listen<T> = (data: T, successful: boolean, error: Error | null) => void;
+export type BridgeMethod = (data: BridgeCallData) => Promise<BridgeCallData>;
 
 interface IBridgeConfig {
   data?: string;
@@ -101,7 +115,7 @@ export class Bridge {
   private constructor() {}
 
   version() {
-    return packageJson.version;
+    return __VERSION__;
   }
 
   async ready(bridgeConfig: IBridgeConfig = defaultBridgeConfig) {

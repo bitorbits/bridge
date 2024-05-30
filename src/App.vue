@@ -6,8 +6,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { Bridge, BridgePlugin } from "./lib/bridge";
-import { BridgeCallData } from "./lib/types";
+import { Bridge, BridgePlugin, BridgeCallData } from "./bridge";
 
 const data = ref("loading");
 

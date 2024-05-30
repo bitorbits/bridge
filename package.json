@@ -1,6 +1,6 @@
 {
   "name": "@bitorbits/bridge",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Communication between WebView and Native",
   "repository": "https://github.com/bitorbits/bridge.git",
   "author": "BitOrbits <contact.bitorbits@gmail.com>",
@@ -8,11 +8,11 @@
   "type": "module",
   "main": "./dist/bridge.js",
   "module": "./dist/bridge.js",
-  "types": "./dist/lib/bridge.d.ts",
+  "types": "./dist/bridge.d.ts",
   "exports": {
     ".": {
       "import": "./dist/bridge.js",
-      "types": "./dist/lib/bridge.d.ts"
+      "types": "./dist/bridge.d.ts"
     }
   },
   "files": [
