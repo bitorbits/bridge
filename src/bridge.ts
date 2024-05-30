@@ -290,6 +290,8 @@ export abstract class BridgePlugin {
     }
   }
 
+  abstract name(): string;
+
   private getName(name: string) {
     return `${this.constructor.name}.${name}`.trim();
   }

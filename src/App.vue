@@ -12,6 +12,10 @@ import { delay } from "./common/helpers";
 const data = ref("loading");
 
 class App extends BridgePlugin {
+  name(): string {
+    return "App";
+  }
+
   constructor() {
     super();
     this.method(this.invoke.name, this.invoke);
