@@ -1,6 +1,6 @@
 var v = Object.defineProperty;
 var p = (n, e, t) => e in n ? v(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t;
-var i = (n, e, t) => (p(n, typeof e != "symbol" ? e + "" : e, t), t);
+var i = (n, e, t) => p(n, typeof e != "symbol" ? e + "" : e, t);
 import { v4 as B } from "uuid";
 class f {
   constructor(e) {
@@ -77,11 +77,10 @@ class w {
     return (e = window.bridge) == null ? void 0 : e.version();
   }
   version() {
-    return "4.0.4";
+    return "4.0.5";
   }
   async ready(e = h) {
-    if (this.bridgeIsReady)
-      return null;
+    if (this.bridgeIsReady) return null;
     const t = e.data ?? h.data, r = e.plugins ?? h.plugins;
     window.dispatchEvent(new CustomEvent("BridgeInit")), await this.async("Bridge.init", t);
     for (let a of r)

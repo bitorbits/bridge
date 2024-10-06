@@ -54,7 +54,6 @@ onMounted(async () => {
 
     await app.toast("onMounted");
   } catch (error) {
-    alert("error");
     console.log(error);
   }
 });
