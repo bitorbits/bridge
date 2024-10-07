@@ -1,6 +1,6 @@
 {
   "name": "@bitorbits/bridge",
-  "version": "4.0.5",
+  "version": "4.0.6",
   "description": "Communication between WebView and Native",
   "repository": "https://github.com/bitorbits/bridge.git",
   "author": "BitOrbits <contact.bitorbits@gmail.com>",
@@ -9,6 +9,7 @@
   "main": "./dist/bridge.js",
   "module": "./dist/bridge.js",
   "types": "./dist/bridge.d.ts",
+  "browser": "./dist/bridge.js",
   "exports": {
     ".": {
       "import": "./dist/bridge.js",
@@ -37,7 +38,6 @@
     "vue-tsc": "^2.1.6"
   },
   "dependencies": {
-    "uuid": "^10.0.0",
     "vue": "^3.5.11"
   }
 }

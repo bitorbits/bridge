@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
-
 declare global {
   interface Window {
     bridge?: Bridge;
@@ -28,7 +26,7 @@ enum BridgeCallType {
 }
 
 class BridgeCall {
-  readonly id: BridgeCallId = uuidv4();
+  readonly id: BridgeCallId = self.crypto.randomUUID();
   readonly name: string;
   data: BridgeCallData = null;
   readonly type: BridgeCallType = BridgeCallType.NONE;
