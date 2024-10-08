@@ -15,6 +15,14 @@ export default defineConfig({
       fileName: "bridge",
       formats: ["es"],
     },
+    rollupOptions: {
+      external: ["uuid"],
+      output: {
+        globals: {
+          uuid: "uuid",
+        },
+      },
+    },
   },
   plugins: [vue(), dts({ rollupTypes: true })],
 });
