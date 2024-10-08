@@ -1,6 +1,6 @@
 {
   "name": "@bitorbits/bridge",
-  "version": "4.0.12",
+  "version": "4.0.13",
   "description": "Communication between WebView and Native",
   "repository": "https://github.com/bitorbits/bridge.git",
   "author": "BitOrbits <contact.bitorbits@gmail.com>",

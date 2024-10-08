@@ -236,14 +236,14 @@ export class Bridge {
     return this.listen(`${name}.invoke`, (args: BridgeCallData) => {
       method(args)
         .then((returnData) => {
-          this.async(`${name}.return`, returnData);
+          this.async(`${name}.return`, returnData).catch((error) => console.error(error));
         })
         .catch((error) => {
           let message = error;
           if (error instanceof Error) {
             message = error.message;
           }
-          this.async(`${name}.error`, message);
+          this.async(`${name}.error`, message).catch((error) => console.error(error));
         });
     });
   }
