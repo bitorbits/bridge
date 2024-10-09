@@ -77,7 +77,7 @@ class w {
     return (e = window.bridge) == null ? void 0 : e.version();
   }
   version() {
-    return "4.0.13";
+    return "4.0.15";
   }
   async ready(e = u) {
     if (this.bridgeIsReady) return null;
