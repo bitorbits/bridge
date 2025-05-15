@@ -64,7 +64,7 @@ export declare type Reject<T> = (data: T) => void;
 
 export declare type Resolve<T> = (data: T | PromiseLike<T>) => void;
 
-export {};
+export { };
 
 declare global {
   interface Window {
